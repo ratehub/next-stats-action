@@ -69,6 +69,10 @@ if (!allowedActions.has(actionInfo.actionName) && !actionInfo.isRelease) {
       }
     }
 
+    if (statsConfig.setupCommand) {
+      await exec(statsConfig.setupCommand)
+    }
+
     let mainRepoPkgPaths
     let diffRepoPkgPaths
 
@@ -79,17 +83,18 @@ if (!allowedActions.has(actionInfo.actionName) && !actionInfo.isRelease) {
       logger(`Running initial build for ${dir}`)
       if (!actionInfo.skipClone) {
         let buildCommand = `cd ${dir}${
-          !statsConfig.skipInitialInstall ? ' && yarn install' : ''
+          !statsConfig.skipInitialInstall ? ` && ${statsConfig.installCommand || 'yarn install'}` : ''
         }`
 
         if (statsConfig.initialBuildCommand) {
           buildCommand += ` && ${statsConfig.initialBuildCommand}`
         }
-        await exec(buildCommand)
+        console.log(await exec(buildCommand))
+        console.log(await exec(`cd ${dir} && ls -lah`))
       }
 
       logger(`Linking packages in ${dir}`)
-      const pkgPaths = await linkPackages(dir)
+      const pkgPaths = await linkPackages(dir, relativeStatsAppDir !== './')
 
       if (dir === mainRepoDir) mainRepoPkgPaths = pkgPaths
       else diffRepoPkgPaths = pkgPaths

@@ -17,9 +17,11 @@ const StatsConfig = {
   // the Heading to show at the top of stats comments
   commentHeading: 'Stats from current PR' | undefined,
   commentReleaseHeading: 'Stats from current release' | undefined,
+  setupCommand: undefined | string,
+  installCommand: undefined | string,
+  skipInitialInstall: undefined | boolean,
   // the command to build your project if not done on post install
   initialBuildCommand: undefined | string,
-  skipInitialInstall: undefined | boolean,
   // the command to build the app (app source should be in `.stats-app`)
   appBuildCommand: string,
   appStartCommand: string | undefined,

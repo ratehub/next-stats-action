@@ -51,8 +51,8 @@ module.exports = actionInfo => {
         }
       }
     },
-    async linkPackages(repoDir = '') {
-      await fs.remove(path.join(repoDir, 'node_modules'))
+    async linkPackages(repoDir = '', removeModules = true) {
+      if (removeModules) await fs.remove(path.join(repoDir, 'node_modules'))
       const pkgPaths = new Map()
       const pkgDatas = new Map()
       let pkgs
@@ -69,13 +69,15 @@ module.exports = actionInfo => {
 
       for (const pkg of pkgs) {
         const pkgPath = path.join(repoDir, 'packages', pkg)
-        await fs.remove(path.join(pkgPath, 'node_modules'))
+        if (removeModules) await fs.remove(path.join(pkgPath, 'node_modules'))
 
         const pkgDataPath = path.join(pkgPath, 'package.json')
-        const pkgData = require(pkgDataPath)
-        const { name } = pkgData
-        pkgDatas.set(name, { pkgDataPath, pkgData })
-        pkgPaths.set(name, pkgPath)
+        if (fs.existsSync(pkgDataPath)) {
+          const pkgData = require(pkgDataPath)
+          const { name } = pkgData
+          pkgDatas.set(name, { pkgDataPath, pkgData })
+          pkgPaths.set(name, pkgPath)
+        }
       }
 
       for (const pkg of pkgDatas.keys()) {

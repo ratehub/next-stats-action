@@ -32,16 +32,21 @@ async function runConfigs(
 
       // if stats-config is in root of project we're analyzing
       // the whole project so copy from each repo
+      /*
       const curStatsAppPath =
         relativeStatsAppDir === './'
           ? mainRepoStats
             ? diffRepoDir
             : mainRepoDir
           : path.join(diffRepoDir, relativeStatsAppDir)
+       */
+      const curStatsAppPath = path.join(diffRepoDir, relativeStatsAppDir);
 
       // clean statsAppDir
       await fs.remove(statsAppDir)
       await fs.copy(curStatsAppPath, statsAppDir)
+
+      console.log(await exec(`ls ${curStatsAppPath}`))
 
       logger(`Copying ${curStatsAppPath} ${statsAppDir}`)
 
@@ -51,8 +56,10 @@ async function runConfigs(
         await fs.writeFile(filePath, configFile.content, 'utf8')
       }
 
-      // links local builds of the packages and installs dependencies
-      await linkPkgs(statsAppDir, pkgPaths)
+      if (relativeStatsAppDir !== './') {
+        // links local builds of the packages and installs dependencies
+        await linkPkgs(statsAppDir, pkgPaths)
+      }
 
       if (!diffing) {
         curStats.General.nodeModulesSize = await getDirSize(

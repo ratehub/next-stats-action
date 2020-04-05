@@ -3,12 +3,13 @@ const fs = require('fs-extra')
 const exec = require('../util/exec')
 const glob = require('../util/glob')
 const logger = require('../util/logger')
-const { statsAppDir, diffingDir } = require('../constants')
+let { statsAppDir, diffingDir } = require('../constants')
 
 module.exports = async function collectDiffs(
   filesToTrack = [],
   initial = false
 ) {
+  statsAppDir = path.join(statsAppDir, './packages/web-server')
   if (initial) {
     logger('Setting up directory for diffing')
     // set-up diffing directory
