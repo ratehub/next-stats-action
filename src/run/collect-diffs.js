@@ -9,9 +9,11 @@ module.exports = async function collectDiffs(
   filesToTrack = [],
   initial = false
 ) {
-  statsAppDir = path.join(statsAppDir, './packages/web-server')
   if (initial) {
     logger('Setting up directory for diffing')
+    logger(statsAppDir)
+    logger(await exec(`ls ${statsAppDir}`))
+
     // set-up diffing directory
     await fs.remove(diffingDir)
     await fs.mkdirp(diffingDir)
@@ -55,7 +57,9 @@ module.exports = async function collectDiffs(
     })
   )
 
-  await exec(`cd ${diffingDir} && git add .`, true)
+  await exec(`cd ${diffingDir} && git add .`)
+
+  await exec(`sleep 600`)
 
   if (initial) {
     await exec(`cd ${diffingDir} && git commit -m 'initial commit'`)

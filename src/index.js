@@ -94,7 +94,7 @@ if (!allowedActions.has(actionInfo.actionName) && !actionInfo.isRelease) {
       }
 
       logger(`Linking packages in ${dir}`)
-      const pkgPaths = await linkPackages(dir, relativeStatsAppDir !== './')
+      const pkgPaths = await linkPackages(dir, false)
 
       if (dir === mainRepoDir) mainRepoPkgPaths = pkgPaths
       else diffRepoPkgPaths = pkgPaths

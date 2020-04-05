@@ -12,6 +12,7 @@ const allowedConfigLocations = [
   '.stats-app',
   'test/.stats-app',
   '.github/.stats-app',
+  'packages/web-server',
 ]
 
 module.exports = {

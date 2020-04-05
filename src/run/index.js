@@ -13,6 +13,8 @@ async function runConfigs(
   { statsConfig, relativeStatsAppDir, mainRepoPkgPaths, diffRepoPkgPaths },
   diffing = false
 ) {
+  logger(`Running configs: ${relativeStatsAppDir}, ${mainRepoPkgPaths}, ${diffRepoPkgPaths}`)
+
   const results = []
 
   for (const config of configs) {
@@ -44,7 +46,7 @@ async function runConfigs(
 
       // clean statsAppDir
       await fs.remove(statsAppDir)
-      await fs.copy(curStatsAppPath, statsAppDir)
+      await fs.copy(path.join(curStatsAppPath, '../../'), statsAppDir)
 
       console.log(await exec(`ls ${curStatsAppPath}`))
 
@@ -56,7 +58,7 @@ async function runConfigs(
         await fs.writeFile(filePath, configFile.content, 'utf8')
       }
 
-      if (relativeStatsAppDir !== './') {
+      if (relativeStatsAppDir !== 'packages/web-server') {
         // links local builds of the packages and installs dependencies
         await linkPkgs(statsAppDir, pkgPaths)
       }
